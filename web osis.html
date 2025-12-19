@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Web OSIS - Warga Sekolah</title>
+    <style>
+        :root{
+            --bg:#ffffff; --card:#fff; --accent:#297be0; --muted:#6b7280;
+            --glass: rgba(255, 254, 254, 0.7);
+            font-family: Inter, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+        *{box-sizing:border-box}
+        body{margin:0;background:linear-gradient(180deg,#eef6ff 20%,var(--bg) 50%);color:#111}
+        header{
+            background:linear-gradient(90deg,var(--accent),#6aa6ff 120%);
+            color:#f7f5f5;padding:14px 18px;display:flex;align-items:center;gap:12px;
+            position:sticky;top:0;z-index:10;box-shadow:0 4px 18px rgba(0, 0, 0, 0.457)
+        }
+        .logo{display:flex;align-items:center;gap:10px;font-weight:700}
+        .logo .mark{width:50px;border-radius:8px;color:var(--accent);
+            display:flex;align-items:center;justify-content:center;font-weight:800;overflow:hidden}
+        .logo img{width:100%;height:100%;object-fit:cover}
+        nav{margin-left:auto;display:flex;gap:10px;align-items:center}
+        nav a{color:rgba(255, 255, 255, 0.95);text-decoration:none;padding:8px 12px;border-radius:8px;font-weight:60}
+        nav a:hover{background:rgba(255, 139, 139, 0.256)}
+        main{padding:22px;max-width:1100px;margin:22px auto}
+        .hero{display:flex;gap:20px;align-items:center;background:var(--card);padding:20px;border-radius:120px;box-shadow:0 6px 24px rgba(255, 0, 0, 0.651)}
+        .hero .left{flex:1}
+        .hero h1{margin:0 0 8px 0;font-size:1.6rem}
+        .hero p{margin:0;color:var(--muted)}
+        .hero .cta{margin-top:12px;display:flex;gap:8px}
+        .btn{background:var(--accent);color:#fff;padding:10px 14px;border-radius:10px;border:0;font-weight:700;cursor:pointer}
+        .btn.secondary{background:#eef3ff;color:var(--accent);font-weight:700}
+        .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:18px}
+        .col-8{grid-column:span 8}
+        .col-4{grid-column:span 4}
+        .card{background:var(--card);padding:14px;border-radius:10px;box-shadow:0 6px 20px rgba(16,24,40,0.04)}
+        .card h3{margin:0 0 8px 0}
+        .list{display:flex;flex-direction:column;gap:10px}
+        .announcement{border-left:4px solid var(--accent);padding:10px 12px;background:linear-gradient(180deg,rgba(11,114,239,0.03),transparent);border-radius:8px}
+        .meta{color:var(--muted);font-size:0.9rem}
+        .event{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:var(--glass)}
+        .small{font-size:0.9rem;color:var(--muted)}
+        form{display:flex;flex-direction:column;gap:8px}
+        input,textarea,select{padding:10px;border-radius:8px;border:1px solid #e6eefb;background:#fff;outline:none}
+        textarea{min-height:80px;resize:vertical}
+        footer{margin-top:30px;text-align:center;color:var(--muted);font-size:0.9rem;padding:22px}
+        /* responsive */
+        @media (max-width:900px){
+            .grid{grid-template-columns:repeat(6,1fr)}
+            .col-8{grid-column:span 6}
+            .col-4{grid-column:span 6}
+            .hero{flex-direction:column;align-items:flex-start}
+            nav{display:none}
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="logo" aria-hidden="true">
+        <div class="mark">
+            <img src="osis.png" alt="Logo OSIS">
+        </div>
+        <div>
+            <div style="font-size:0.95rem">OSIS - Organisasi Siswa</div>
+            <div style="font-size:0.78rem;color:rgba(255,255,255,0.9)">Warga Sekolah</div>
+        </div>
+    </div>
+    <nav aria-label="Navigasi utama">
+        <a href="#beranda">Beranda</a>
+        <a href="#pengumuman">Pengumuman</a>
+        <a href="#kegiatan">Kegiatan</a>
+        <a href="#anggota">Anggota</a>
+        <a href="#kontak">Kontak</a>
+    </nav>
+</header>
+
+<main>
+    <section id="beranda" class="hero card">
+        <div class="left">
+            <h1>Selamat datang di Web OSIS</h1>
+            <p>Tempat informasi resmi untuk pengumuman, kegiatan, dan layanan bagi seluruh warga sekolah. Tetap terhubung, partisipatif, dan kreatif.</p>
+            <div class="cta">
+                <button class="btn" id="btn-buat-pengumuman">Buat Pengumuman</button>
+                <button class="btn secondary" id="btn-lihat-kegiatan">Lihat Kegiatan</button>
+            </div>
+        </div>
+        <div style="width:350px;text-align:center">
+            <img src="smekda.png" alt="Ilustrasi OSIS" style="width:140px;opacity:0.95">
+            <p class="small" style="margin-top:10px">Jadwal rapat, acara, dan pengumuman resmi.</p>
+        </div>
+    </section>
+
+    <div class="grid">
+        <section id="pengumuman" class="col-8 card">
+            <h3>Pengumuman Terbaru</h3>
+            <div class="list" id="pengumuman-list" aria-live="polite"></div>
+
+            <details style="margin-top:12px">
+                <summary style="cursor:pointer;font-weight:700">Tambahkan/Mengelola Pengumuman</summary>
+                <form id="form-pengumuman" style="margin-top:10px">
+                    <input type="text" id="judul" placeholder="Judul pengumuman" required>
+                    <textarea id="isi" placeholder="Isi pengumuman" required></textarea>
+                    <div style="display:flex;gap:8px">
+                        <input type="text" id="penulis" placeholder="Penulis (contoh: OSIS)" required>
+                        <input type="date" id="tanggal" value="">
+                    </div>
+                    <div style="display:flex;gap:8px;margin-top:6px">
+                        <button class="btn" type="submit">Simpan</button>
+                        <button class="btn secondary" type="button" id="reset-pengumuman">Reset</button>
+                    </div>
+                </form>
+            </details>
+        </section>
+
+        <aside id="kegiatan" class="col-4 card">
+            <h3>Kegiatan Mendatang</h3>
+            <div id="events" class="list"></div>
+
+            <details style="margin-top:12px">
+                <summary style="cursor:pointer;font-weight:700">Tambahkan Kegiatan</summary>
+                <form id="form-kegiatan" style="margin-top:10px">
+                    <input type="text" id="kegiatan-judul" placeholder="Judul kegiatan" required>
+                    <input type="date" id="kegiatan-tanggal" required>
+                    <input type="time" id="kegiatan-waktu" required>
+                    <input type="text" id="kegiatan-lokasi" placeholder="Lokasi">
+                    <button class="btn" type="submit">Tambah</button>
+                </form>
+            </details>
+        </aside>
+
+        <section id="anggota" class="col-8 card">
+            <h3>Direktori Anggota OSIS</h3>
+            <p class="small">Daftar singkat pengurus OSIS. Anda dapat menambah kolega untuk dicantumkan di sini.</p>
+            <div id="members" class="list" style="margin-top:10px"></div>
+
+            <form id="form-anggota" style="margin-top:12px">
+                <input type="text" id="nama-anggota" placeholder="Nama lengkap" required>
+                <input type="text" id="jabatan-anggota" placeholder="Jabatan (contoh: Ketua OSIS)" required>
+                <button class="btn" type="submit">Tambah Anggota</button>
+            </form>
+        </section>
+
+        <aside id="kontak" class="col-4 card">
+            <h3>Kontak & Layanan</h3>
+            <p class="small">Hubungi OSIS untuk permohonan acara, aspirasi, atau laporan.</p>
+            <form id="form-kontak" style="margin-top:8px">
+                <input type="text" id="nama-kontak" placeholder="Nama" required>
+                <input type="email" id="email-kontak" placeholder="Email" required>
+                <select id="keperluan">
+                    <option value="aspirasi">Aspirasi</option>
+                    <option value="acara">Permohonan Acara</option>
+                    <option value="laporan">Laporan</option>
+                    <option value="lainnya">Lainnya</option>
+                </select>
+                <textarea id="pesan-kontak" placeholder="Pesan Anda..." required></textarea>
+                <button class="btn" type="submit">Kirim</button>
+            </form>
+        </aside>
+    </div>
+
+    <footer>
+        &copy; <span id="tahun"></span> OSIS - Warga Sekolah. Dibuat untuk komunikasi dan kegiatan sekolah.
+    </footer>
+</main>
+
+<script>
+    // Simple client-side storage for demo purposes only.
+    const LS_KEYS = {ANN:'osis_pengumuman', EVT:'osis_kegiatan', MEM:'osis_anggota', MSG:'osis_pesan'};
+    const today = new Date().toISOString().slice(0,10);
+    document.getElementById('tahun').textContent = new Date().getFullYear();
+
+    // Utilities
+    const $ = id => document.getElementById(id);
+    function load(key, fallback=[]) {
+        try { return JSON.parse(localStorage.getItem(key)) || fallback } catch(e){return fallback}
+    }
+    function save(key, data) { localStorage.setItem(key, JSON.stringify(data)) }
+
+    // Initialize data
+    let pengumuman = load(LS_KEYS.ANN, [
+        {judul:"Musyawarah OSIS Bulanan","isi":"Musyawarah akan diadakan pada hari Senin, pukul 14:00 di aula.","penulis":"OSIS","tanggal":today}
+    ]);
+    let kegiatan = load(LS_KEYS.EVT, [
+        {judul:"Bakti Sosial","tanggal":today, waktu:"09:00", lokasi:"Lapangan"},
+        {judul:"Lomba Cipta Puisi","tanggal":today, waktu:"13:00", lokasi:"Perpustakaan"}
+    ]);
+    let anggota = load(LS_KEYS.MEM, [
+        {nama:"Siti Aulia","jabatan":"Ketua OSIS"},
+        {nama:"Rian Pratama","jabatan":"Sekretaris"}
+    ]);
+
+    // Render functions
+    function renderPengumuman(){
+        const container = $('pengumuman-list'); container.innerHTML='';
+        if(pengumuman.length===0){container.innerHTML='<div class="small">Belum ada pengumuman.</div>';return}
+        pengumuman.slice().reverse().forEach((p,idx)=>{
+            const el = document.createElement('div'); el.className='announcement';
+            el.innerHTML = `
+                <strong>${escapeHtml(p.judul)}</strong>
+                <div class="meta">${escapeHtml(p.penulis)} • ${p.tanggal || ''}</div>
+                <div style="margin-top:8px">${escapeHtml(p.isi)}</div>
+                <div style="margin-top:8px;display:flex;gap:8px">
+                    <button data-idx="${pengumuman.length-1-idx}" class="btn small-btn">Hapus</button>
+                </div>
+            `;
+            container.appendChild(el);
+        });
+        container.querySelectorAll('.small-btn').forEach(b=>{
+            b.addEventListener('click', e=>{
+                const i = Number(e.currentTarget.dataset.idx);
+                if(confirm('Hapus pengumuman ini?')){ pengumuman.splice(i,1); save(LS_KEYS.ANN,pengumuman); renderPengumuman(); }
+            })
+        });
+    }
+
+    function renderEvents(){
+        const el = $('events'); el.innerHTML='';
+        if(kegiatan.length===0){el.innerHTML='<div class="small">Tidak ada kegiatan.</div>';return}
+        kegiatan.slice().sort((a,b)=>a.tanggal.localeCompare(b.tanggal)).forEach((k,idx)=>{
+            const node = document.createElement('div'); node.className='event';
+            node.innerHTML = `<div>
+                <strong>${escapeHtml(k.judul)}</strong><div class="small">${k.tanggal} ${k.waktu || ''}</div>
+                <div class="small">${escapeHtml(k.lokasi || '')}</div>
+            </div>
+            <div><button data-idx="${idx}" class="btn small-btn">Hapus</button></div>`;
+            el.appendChild(node);
+        });
+        el.querySelectorAll('.small-btn').forEach(b=>{
+            b.addEventListener('click', e=>{
+                const i = Number(e.currentTarget.dataset.idx);
+                if(confirm('Hapus kegiatan?')){ kegiatan.splice(i,1); save(LS_KEYS.EVT,kegiatan); renderEvents(); }
+            })
+        });
+    }
+
+    function renderMembers(){
+        const el = $('members'); el.innerHTML='';
+        if(anggota.length===0){el.innerHTML='<div class="small">Belum ada anggota tercatat.</div>';return}
+        anggota.forEach((m,idx)=>{
+            const div = document.createElement('div'); div.style.display='flex'; div.style.justifyContent='space-between'; div.style.alignItems='center';
+            div.innerHTML = `<div><strong>${escapeHtml(m.nama)}</strong><div class="small">${escapeHtml(m.jabatan)}</div></div>
+            <div><button data-idx="${idx}" class="btn small-btn">Hapus</button></div>`;
+            el.appendChild(div);
+        });
+        el.querySelectorAll('.small-btn').forEach(b=>{
+            b.addEventListener('click', e=>{
+                const i = Number(e.currentTarget.dataset.idx);
+                if(confirm('Hapus anggota?')){ anggota.splice(i,1); save(LS_KEYS.MEM,anggota); renderMembers(); }
+            })
+        });
+    }
+
+    // Escape to prevent accidental injection when rendering innerHTML
+    function escapeHtml(s=''){
+        return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+    }
+
+    // Form handlers
+    $('form-pengumuman').addEventListener('submit', e=>{
+        e.preventDefault();
+        // Very simple admin gate: ask password (for demo only). In production, use proper auth.
+        const pass = prompt('Masukkan kata sandi admin untuk menyimpan pengumuman:');
+        if(pass !== 'osisadmin'){ alert('Kata sandi salah'); return; }
+        const j = $('judul').value.trim(), i = $('isi').value.trim(), pen = $('penulis').value.trim() || 'OSIS', t = $('tanggal').value || today;
+        pengumuman.push({judul:j, isi:i, penulis:pen, tanggal:t});
+        save(LS_KEYS.ANN,pengumuman); renderPengumuman(); e.target.reset();
+    });
+    $('reset-pengumuman').addEventListener('click', ()=>{ if(confirm('Hapus semua pengumuman?')){pengumuman=[]; save(LS_KEYS.ANN,pengumuman); renderPengumuman()} });
+
+    $('form-kegiatan').addEventListener('submit', e=>{
+        e.preventDefault();
+        const j = $('kegiatan-judul').value.trim(), t=$('kegiatan-tanggal').value, w=$('kegiatan-waktu').value, l=$('kegiatan-lokasi').value;
+        kegiatan.push({judul:j,tanggal:t,waktu:w,lokasi:l});
+        save(LS_KEYS.EVT,kegiatan); renderEvents(); e.target.reset();
+    });
+
+    $('form-anggota').addEventListener('submit', e=>{
+        e.preventDefault();
+        const n=$('nama-anggota').value.trim(), j=$('jabatan-anggota').value.trim();
+        anggota.push({nama:n,jabatan:j}); save(LS_KEYS.MEM,anggota); renderMembers(); e.target.reset();
+    });
+
+    $('form-kontak').addEventListener('submit', e=>{
+        e.preventDefault();
+        const msg = {nama:$('nama-kontak').value.trim(),email:$('email-kontak').value,keperluan:$('keperluan').value,pesan:$('pesan-kontak').value, waktu:new Date().toISOString()};
+        const msgs = load(LS_KEYS.MSG,[]); msgs.push(msg); save(LS_KEYS.MSG,msgs);
+        alert('Terima kasih, pesan Anda telah diterima (disimpan lokal).'); e.target.reset();
+    });
+
+    // Quick buttons
+    $('btn-buat-pengumuman').addEventListener('click', ()=>{ location.hash = '#pengumuman'; document.querySelector('#form-pengumuman input')?.focus(); });
+    $('btn-lihat-kegiatan').addEventListener('click', ()=>{ location.hash = '#kegiatan'; });
+
+    // Initial render
+    renderPengumuman(); renderEvents(); renderMembers();
+
+    // Small UX: allow pressing Enter to accept default date = today for announcements
+    if(!$('tanggal').value) $('tanggal').value = today;
+</script>
+</body>
+</html></details></section>
